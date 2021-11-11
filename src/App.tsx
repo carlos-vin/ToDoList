@@ -1,25 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
+import {useState,useEffect} from 'react';
 import './App.css';
+import MainContainer from './components/MainContainer'; 
+import Header from './components/Header';
+import ToDoBox from './components/ToDoBox';
+import AddContainer from './components/AddContainer';
+import ToDo from './components/ToDo';
+
 
 function App() {
+
+  const [todoList,setTodoList]=useState(['']);
+  
+  useEffect(()=>{
+    let listClone=[...todoList]
+    if(listClone[0]==''){
+      listClone.shift()
+      setTodoList(listClone)
+    }
+  },[todoList])
+
+
+  function addToDo(newTodo:string){
+    const listClone = [...todoList];
+    if(listClone[0]==''){
+      listClone.shift()
+    }
+    listClone.push(newTodo);
+    setTodoList(listClone);
+    console.log(todoList)
+   
+  }
+
+  function delToDo(index:number) {
+    let listClone = [...todoList];
+    listClone.splice(index,1);
+    setTodoList(listClone);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MainContainer>
+      <Header/>
+      <ToDoBox>
+       {todoList.map((element,index)=>{return(<ToDo del={delToDo} chave={index}>{element}</ToDo>)})}
+      </ToDoBox>  
+      <AddContainer add={addToDo}/>
+     
+    </MainContainer>
+    
   );
 }
 
